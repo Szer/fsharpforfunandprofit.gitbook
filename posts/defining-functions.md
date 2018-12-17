@@ -8,40 +8,28 @@ seriesOrder: 8
 categories: [Functions, Combinators]
 ---
 
+# Defining Functions
 
-> We have seen how to create typical functions using the "let" syntax, below:
-
-Мы видели как создавать обычные функции используя синтаксис "let", ниже:
+Мы уже знаем как создавать обычные функции используя "let" синтаксис:
 
 ```fsharp
 let add x y = x + y
 ```
 
-> In this section, we'll look at some other ways of creating functions, and tips for defining functions.
+В этой статье мы рассмотрим другие способы создания функций, а также советы по их определению.
 
-В этой статье мы рассмотрим некоторые другие способы создания функций, а также советы по их определению.
+## Анонимные функции (лямбды)
 
-## Anonymous functions (a.k.a. lambdas) | Анонимные функцие (лямбды) ##
-
-> If you are familiar with lambdas in other languages, this will not be new to you. An anonymous function (or "lambda expression") is defined using the form:
-
-Если вы знакомы с лямбдами в других языках, эта темя не станет новой. Анонимные функции (или "лямбда выражения") опредеяются посредство следующей формы:
+Если вы знакомы с лямбдами в других языках, следующие абзацы покажутся знакомыми. Анонимные функции (или "лямбда выражения") определяются следующим образом:
 
 ```fsharp
 fun parameter1 parameter2 etc -> expression
 ```
 
-> If you are used to lambdas in C# there are a couple of differences:
-
 По сравнению с лямбдами из C# есть два отличия:
 
-> * the lambda must have the special keyword `fun`, which is not needed in the C# version
-> * the arrow symbol is a single arrow `->` rather than the double arrow (`=>`) in C#.
-
-* лямбды должны иметь специальное ключенове слово `fun`, которое отстутствует в C#
+* лямбды должны начинаться с ключевого слова `fun`, которое в C# не требуется
 * используется одинарная стрелка `->`, вместо двойной `=>` из C#.
-
-> Here is a lambda that defines addition:
 
 Лямбда-определение функции сложения:
 
@@ -49,17 +37,13 @@ fun parameter1 parameter2 etc -> expression
 let add = fun x y -> x + y
 ```
 
-> This is exactly the same as a more conventional function definition:
-
-Таже функция в традиционной форме:
+Та же функция в традиционной форме:
 
 ```fsharp
 let add x y = x + y
 ```
 
-> Lambdas are often used when you have a short expression and you don't want to define a function just for that expression. This is particularly common with list operations, as we have seen already.
-
-Лямбды часто используются, когда есть короткое выражение и нет желания определять для него отдельную функцию. Что особенно характерно для операций со списком, как было показано ранее.
+Лямбды часто используются в виде небольших выражений или когда нет желания определять для выражения отдельную функцию. Как вы уже видели, при работе со списками это не редкость.
 
 ```fsharp
 // with separately defined function
@@ -70,13 +54,9 @@ let add1 i = i + 1
 [1..10] |> List.map (fun i -> i + 1)
 ```
 
-> Note that you must use parentheses around the lambda.
+Обратите внимание, вокруг лямбд необходимо использовать скобки.
 
-Следует обратить внимание, что необходимо использовать скобки вокруг лямбд.
-
-> Lambdas are also used when you want to make it clear that you are returning a function from another function. For example, the "`adderGenerator`" function that we talked about earlier could be rewritten with a lambda.
-
-Лямбды также используются когда необходимо показать явно, что из функции возвращается другая функция. Например, "`adderGenerator`" который обсуждался ранее может быть переписан с помощью лямбды.
+Так же лямбды используются, когда из функции необходимо явно вернуть другую функцию. Например, ранее обсуждаемый "`adderGenerator`", может быть переписан с помощью лямбды.
 
 ```fsharp
 // original definition
@@ -86,11 +66,7 @@ let adderGenerator x = (+) x
 let adderGenerator x = fun y -> x + y
 ```
 
-> The lambda version is slightly longer, but makes it clear that an intermediate function is being returned.
-
-Лямбда версия немного длиньше, но позволяет сразу понять, что будет возвращена промежуточная функция.
-
-> You can nest lambdas as well. Here is yet another definition of `adderGenerator`, this time using lambdas only. 
+Лямбда версия немного длиннее, но сразу даёт понять, что будет возвращена промежуточная функция.
 
 Лямбды могут быть вложенными. Еще один пример определения `adderGenerator`, в этот раз чисто на лямбдах.
 
@@ -98,12 +74,10 @@ let adderGenerator x = fun y -> x + y
 let adderGenerator = fun x -> (fun y -> x + y)
 ```
 
-> Can you see that all three of the following definitions are the same thing?
-
-Ясно ли вам, что все три следующих определения эквивалентны?
+Ясно ли вам, что все три определения эквивалентны?
 
 ```fsharp
-let adderGenerator1 x y = x + y 
+let adderGenerator1 x y = x + y
 let adderGenerator2 x   = fun y -> x + y
 let adderGenerator3     = fun x -> (fun y -> x + y)
 ```
@@ -112,56 +86,42 @@ let adderGenerator3     = fun x -> (fun y -> x + y)
 
 Если нет, то перечитайте [главу о каррировании](../posts/currying.md). Это очень важно для понимания!
 
-## Pattern matching on parameters | Сопоставление параметров с шаблоном ##
+## Сопоставление параметров с шаблоном
 
-> When defining a function, you can pass an explicit parameter, as we have seen, but you can also pattern match directly in the parameter section. In other words, the parameter section can contain *patterns*, not just identifiers!
+Когда определяется функция, ей можно передать параметры явно, как в примерах выше, но так же можно произвести сопоставление с шаблоном прямо в секции параметров. Другими словами, секция параметров может содержать паттерны (шаблоны сопоставления), а не только идентификаторы!
 
-Когда определяется функция, ей можно передать параметры явно, как было показано ранее, но также можно произвести сопоставление с шаблоном прямо в секции параметров. Другими словами, секция параметров может содержать паттерны (шаблоны сопоставления), а не только идентификаторы!
-
-> The following example demonstrates how to use patterns in a function definition:
-
-Следующий пример демонстрирует как использовать шаблоны в определении функции:
+Следующий пример демонстрирует использование шаблонов в определении функции:
 
 ```fsharp
 type Name = {first:string; last:string} // define a new type
-let bob = {first="bob"; last="smith"}   // define a value 
+let bob = {first="bob"; last="smith"}   // define a value
 
 // single parameter style
-let f1 name =                       // pass in single parameter   
-   let {first=f; last=l} = name     // extract in body of function 
+let f1 name =                       // pass in single parameter
+   let {first=f; last=l} = name     // extract in body of function
    printfn "first=%s; last=%s" f l
 
 // match in the parameter itself
-let f2 {first=f; last=l} =          // direct pattern matching 
-   printfn "first=%s; last=%s" f l 
+let f2 {first=f; last=l} =          // direct pattern matching
+   printfn "first=%s; last=%s" f l
 
 // test
 f1 bob
 f2 bob
 ```
 
-> This kind of matching can only occur when the matching is always possible. For example, you cannot match on union types or lists this way, because some cases might not be matched.
-
-Данный вид сопоставления может присходить только тогда, когда соответсвие всегда разрешимо. Например, нельзя подобным способом матчить типы объединения и списки, потому-что некоторые случаи не могут быть сопоставлены.
+Данный вид сопоставления может присходить только тогда, когда соответствие всегда разрешимо. Например, сопоставлять таким образом типы объединения и списки нельзя, потому что некоторые случаи не смогут быть сопоставлены.
 
 ```fsharp
-let f3 (x::xs) =            // use pattern matching on a list
+let f3 (x::xs) = // use pattern matching on a list
    printfn "first element is=%A" x
 ```
 
-> You will get a warning about incomplete pattern matches.
+Компилятор выдаст предупреждение о неполноте сопоставления (пустой список вызовет ошибку в рантайме на входе в эту функцию).
 
-Будет получено предупреждение о неполноте шаблона.
+## Распространенная ошибка: кортежи vs. множество параметров
 
-<a name="tuples"></a>
-
-## A common mistake: tuples vs. multiple parameters | Распространенная ошибка: кортежи vs. множество параметров ##
-
-> If you come from a C-like language, a tuple used as a single function parameter can look awfully like multiple parameters. They are not the same thing at all!   As I noted earlier, if you see a comma, it is probably part of a tuple. Parameters are separated by spaces.
-
-Если вы пришли из C-подобного языка, кортежи использованные в качестве однопараметрической функции может выглядеть так же ужасно как и мултипараметрическая функция. Но это не одно и то же! Как я отметил ранее, если вы видете запятую, скорее всего это кортеж. Параметры же разделяются посредством запятой.
-
-> Here is an example of the confusion:
+Если вы пришли из C-подобного языка, кортеж, использованный в качестве единственного аргумента функции, может до боли напоминать многопараметрическую функцию. Но это не одно и то же! Как я отметил ранее, если вы видите запятую, скорее всего это кортеж. Параметры же разделяются пробелами.
 
 Пример путаницы:
 
@@ -170,26 +130,20 @@ let f3 (x::xs) =            // use pattern matching on a list
 let addTwoParams x y = x + y
 
 // a function that takes a single tuple parameter
-let addTuple aTuple = 
+let addTuple aTuple =
    let (x,y) = aTuple
    x + y
 
-// another function that takes a single tuple parameter 
+// another function that takes a single tuple parameter
 // but looks like it takes two ints
 let addConfusingTuple (x,y) = x + y
 ```
 
-> * The first definition, "`addTwoParams`", takes two parameters, separated with spaces.
-> * The second definition, "`addTuple`", takes a single parameter. It then binds "x" and "y" to the inside of the tuple and does the addition.
-> * The third definition, "`addConfusingTuple`", takes a single parameter just like "`addTuple`", but the tricky thing is that the tuple is unpacked and bound as part of the parameter definition using pattern matching. Behind the scenes, it is exactly the same as "`addTuple`".
+* Первое определение, "`addTwoParams`", принимает два параметра, разделенных пробелом.
+* Второе определение, "`addTuple`", принимает один параметр, раскладывает внутренности кортежа на "x" и "y" и суммирует их.
+* Третье определение, "`addConfusingTuple`", принимает один параметр, как и "`addTuple`", но фишка в том, что этот кортеж раскладывается прямо в определении параметра при помощи сопоставления с шаблоном. За кулисами все происходит точно так же как и в "`addTuple`".
 
-* Первое определение, "`addTwoParams`", принимает два параметра разделенных пробелом.
-* Второе определение, "`addTuple`", принимает один параметр. Этот параметр привязывает "x" и "y" из кортежа и суммирует их.
-* Третье определение, "`addConfusingTuple`", принимает один параметр как и "`addTuple`", но трюк в том, что этот кортеж распаковывается и привязывается как часть определения параметра при помощи сопоставления с шаблоном. За кулисами все происходит точно так же как и в "`addTuple`".
-
-> Let's look at the signatures (it is always a good idea to look at the signatures if you are unsure)
-
-Посмотрите на сигнатуры (смотреть на сигнатуры - хорошая практика, если вы в чем то не уверены).
+Посмотрим на сигнатуры (всегда смотрите на них если в чём-то не уверены).
 
 ```fsharp
 val addTwoParams : int -> int -> int        // two params
@@ -197,63 +151,48 @@ val addTuple : int * int -> int             // tuple->int
 val addConfusingTuple : int * int -> int    // tuple->int
 ```
 
-> Now let's use them:
-
 А теперь сюда:
 
 ```fsharp
 //test
 addTwoParams 1 2      // ok - uses spaces to separate args
-addTwoParams (1,2)    // error trying to pass a single tuple 
+addTwoParams (1,2)    // error trying to pass a single tuple
 //   => error FS0001: This expression was expected to have type
 //                    int but here has type 'a * 'b
 ```
 
-> Here we can see an error occur in the second case above. 
+Здесь мы видим ошибку во втором вызове.
 
-Здесь мы видим ошибку во втором случае.
+Во-первых, компилятор трактует `(1,2)` как кортеж вида `('a * 'b)`, который и пробует передать в качестве параметра в "`addTwoParams`". После чего жалуется, что ожидаемый первый параметр `addTwoParams` - `int`, а была совершена попытка передачи кортежа.
 
-> First, the compiler treats `(1,2)` as a generic tuple of type `('a * 'b)`, which it attempts to pass as the first parameter to "`addTwoParams`".
-Then it complains that the first parameter of `addTwoParams` is an `int`, and we're trying to pass a tuple.
-
-Во-первых, компилятор трактует `(1,2)` как обобщенный параметр типа `('a * 'b)`, который пробует передать в качестве первого параметра в "`addTwoParams`". После чего жалуется, что первый параметр `addTwoParams` не является `int`, и была совершена попытка передачи кортежа.
-
-> To make a tuple, use a comma!  Here's how to do it correctly:
-
-Что бы сделать кортеж, используйте запятую! Т.е.:
+Что бы сделать кортеж, используйте запятую!
 
 ```fsharp
 addTuple (1,2)           // ok
 addConfusingTuple (1,2)  // ok
 
-let x = (1,2)                 
+let x = (1,2)
 addTuple x               // ok
 
-let y = 1,2              // it's the comma you need, 
-                         // not the parentheses!      
+let y = 1,2              // it's the comma you need,
+                         // not the parentheses!
 addTuple y               // ok
 addConfusingTuple y      // ok
 ```
 
-> Conversely, if you attempt to pass multiple arguments to a function expecting a tuple, you will also get an obscure error.
-
-И наоборот, если попытаться передать множество аргументов в функцию ожидающую кортеж, можно также получить непонятную ошибку.
+И наоборот, если передать несколько аргументов в функцию ожидающую кортеж, так же получите непонятную ошибку.
 
 ```fsharp
-addConfusingTuple 1 2    // error trying to pass two args 
-// => error FS0003: This value is not a function and 
+addConfusingTuple 1 2    // error trying to pass two args
+// => error FS0003: This value is not a function and
 //                  cannot be applied
 ```
 
-> In this case, the compiler thinks that, since you are passing two arguments, `addConfusingTuple` must be curryable. So then "`addConfusingTuple 1`" would be a partial application that returns another intermediate function. Trying to apply that intermediate function with "2" gives an error, because there is no intermediate function! We saw this exact same error in the post on currying, when we discussed the issues that can occur from having too many parameters.
+В этот раз, компилятор решил, что раз передаются два аргумента, `addConfusingTuple` должна быть каррируемой. А запись "`addConfusingTuple 1`" является частичным применением и должна возвращать промежуточную функцию. Попытка вызвать эту промежуточную функцию с параметром "2" выдаст ошибку, т.к. никакой промежуточной функции нет! Мы видим ту же ошибку, что и в главе о каррировании, где мы обсуждали проблемы со слишком большим количеством параметров.
 
-В этот раз, компилятор решил, что раз передаются два аргумента, `addConfusingTuple` должна быть каррируемой. Это значит, что "`addConfusingTuple 1`" является частичным применением и должно возвращать другую промежуточную функцию. Попытка вызвать промежуточную функцию на "2" выдает ошибку, т.к. здесь нет промежуточной функции! Мы видим ту же ошибку, что и в главе о каррировании, когда мы обсуждали проблемы связанные со слишком большим количеством параметров.
+### Почему бы не использовать кортежи в качестве параметров?
 
-### Why not use tuples as parameters? | Почему бы не использовать кортежи в качестве параметров? ###
-
-> The discussion of the issues with tuples above shows that there's another way to define functions with more than one parameter: rather than passing them in separately, all the parameters can be combined into a single composite data structure. In the example below, the function takes a single parameter, which is a tuple containing three items. 
-
-Обсуждение кортежей выше показывает, что существует другой способ опредления функций со множеством параметров: вместо передачи их по отдельности, все параметры могут быть собраны в виде одной структуры. В примере ниже, функция принимает один параметр, который является кортежем из трех элментов.
+Обсуждение кортежей выше показывает другой способ определения функций с множеством параметров: вместо передачи их по отдельности все параметры можно собрать в одну структуру. В примере ниже, функция принимает единственный параметр - кортеж из трех элементов.
 
 ```fsharp
 let f (x,y,z) = x + y * z
@@ -263,29 +202,18 @@ let f (x,y,z) = x + y * z
 f (1,2,3)
 ```
 
-> Note that the function signature is different from a true three parameter function. There is only one arrow, so only one parameter, and the stars indicate that this is a tuple of `(int*int*int)`. 
+Обратите внимание, что сигнатура выше отличается от сигнатуры функции с тремя параметрами. Здесь только одна стрелка, один параметр и звездочки указывающие на кортеж `(int*int*int)`.
 
-Следует обратить внимание, что сигнатура отличается от сигнутуры функции с тремя параметрами. Здесь только одна стрелка, один параметр и звездочки указывающие на кортеж `(int*int*int)`.
+Когда надо подавать аргументы отдельными параметрами, а когда кортежем?
 
-> When would we want to use tuple parameters instead of individual ones?  
+* Когда кортежи значимы сами по себе. Например, для операций в трехмерном пространстве, тройные кортежи будут удобнее чем три координаты по отдельности.
+* Иногда кортежи используются для объединения данные, которые должны сохраняться вместе, в единую структуру. Например, `TryParse` методы из .NET библиотеки возвращают результат и булеву переменную в виде кортежа. Но для хранения большого количества связанных данных лучше определить класс или запись.
 
-Когда возникает необходимость использовать кортеж параметров вместо индивидуальных значений? // TODO: переформулировать.
+### Особый случай: кортежи и функции .NET библиотеки
 
-> * When the tuples are meaningful in themselves. For example, if we are working with three dimensional coordinates, a three-tuple might well be more convenient than three separate dimensions.
-> * Tuples are occasionally used to bundle data together in a single structure that should be kept together. For example, the `TryParse` functions in .NET library return the result and a Boolean as a tuple.  But if you have a lot of data that is kept together as a bundle, then you will probably want to define a record or class type to store it.
+При вызове .NET библиотек запятые встречаются очень часто!
 
-* Когда кортежи значимы сами по себе. Например, если производятся операции над трехмерными координатами, тройные кортежи могут быть более удобными чем три отдельных измерения.
-* Кортежи иногда используются, чтобы объеденить данные в единую структуру, которая должна сохраняться вместе. Например, `TryParse` методы из .NET библиотеки возвращают результат и булевую переменную в виде кортежа. Но если имеется достаточно большой объем данных передаваемых в связке, скорее всего он будет опредлен в виде записи или класса.
-
-### A special case: tuples and .NET library functions | Особые случай: кортежи и функции .NET библиотеки ###
-
-> One area where commas are seen a lot is when calling .NET library functions! 
-
-Одна из областей, где запятые встречаются очень часто, это вызов функций .NET библиотеки!
-
-> These all take tuple-like arguments, and so these calls look just the same as they would from C#:  
-
-Они все принимают кортежи и эти вызовы выглядят также как на C#:
+Они все принимают кортежи, и вызовы выглядят так же как на C#:
 
 ```fsharp
 // correct
@@ -295,24 +223,18 @@ System.String.Compare("a","b")
 System.String.Compare "a" "b"
 ```
 
-> The reason is that .NET library functions are not curried and cannot be partially applied. *All* the parameters must *always* be passed in, and using a tuple-like approach is the obvious way to do this.
+Причина кроется в том, что функции классического .NET не каррированы и не могут быть частично применены. _Все_ парамерты _всегда_ должны быть передаваться сразу, и самый очевидный способ - использовать кортеж.
 
-Причина этого кроется в том, что функции классического .NET не каррируемы и не могут быть частично применены. _Все_ парамерты _всегда_ должны быть передаваться сразу, и использование кортеже-подобной передачи самый очевидный способ сделать это.
-
-> But do note that although these calls look like tuples, they are actually a special case. Real tuples cannot be used, so the following code is invalid:
-
-Однако следует заметить, что данные вызовы лишь выглядят как передачи кортежей, на самом деле это особы случай. В действительности кортежи не могут быть использованы, и следующий код невалиден:
+Заметьте, данные вызовы лишь выглядят как передача кортежей, но на самом деле это особый случай. Вы не сможете передать в такие функции настоящие кортежи:
 
 ```fsharp
 let tuple = ("a","b")
-System.String.Compare tuple   // error  
+System.String.Compare tuple   // error
 
-System.String.Compare "a","b" // error  
+System.String.Compare "a","b" // error
 ```
 
-> If you do want to partially apply .NET library functions, it is normally trivial to write wrapper functions for them, as we have [seen earlier](../posts/partial-application.md), and as shown below:
-
-Если есть желание частично применить функции .NET, это можно сделать тривиально при помощи обертки над ней, как делалось [ранее](../posts/partial-application.md), или как показано ниже:
+Если есть желание частично применять функции .NET, достаточно написать обёртки над ними, как делалось [ранее](../posts/partial-application.md), или как показано ниже:
 
 ```fsharp
 // create a wrapper function
@@ -323,11 +245,10 @@ let strCompareWithB = strCompare "B"
 
 // use it with a higher order function
 ["A";"B";"C"]
-|> List.map strCompareWithB 
+|> List.map strCompareWithB
 ```
 
-
-## Guidelines for separate vs. grouped parameters | Руководство по выбору отдельных и cгруппированных параметров ##
+## Guidelines for separate vs. grouped parameters | Руководство по выбору отдельных и cгруппированных параметров
 
 > The discussion on tuples leads us to a more general topic: when should function parameters be separate and when should they be grouped?
 
